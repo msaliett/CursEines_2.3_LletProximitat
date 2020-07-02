@@ -116,6 +116,8 @@ public class CamioTest {
 	// ASSERT
 	assertEquals(false, resultat);
         
+        assertEquals(1, camio.getVaques().size());
+        
         assertEquals(oldCarrega, camio.getCarrega());
         
         assertEquals( oldLitres, camio.getLitresTotal());
