@@ -35,6 +35,8 @@ public class Camio {
     public List<Vaca> getVaques() {
         return vaques;
     }
+    
+   
 
     @Override
     public String toString() {

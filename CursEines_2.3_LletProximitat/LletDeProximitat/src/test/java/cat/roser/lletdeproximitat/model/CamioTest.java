@@ -1,18 +1,27 @@
 package cat.roser.lletdeproximitat.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 /**
  *
  * @author roser
  */
 public class CamioTest {
+    
+ 
     
     public CamioTest() {
     }
@@ -27,110 +36,145 @@ public class CamioTest {
     
     @BeforeEach
     public void setUp() {
+   
     }
     
     @AfterEach
     public void tearDown() {
+
     }
 
-    /**
-     * Test of getPesMax method, of class Camio.
-     */
-    @Test
-    public void testGetPesMax() {
-        System.out.println("getPesMax");
-        Camio instance = null;
-        double expResult = 0.0;
-        double result = instance.getPesMax();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of getCarrega method, of class Camio.
-     */
-    @Test
-    public void testGetCarrega() {
-        System.out.println("getCarrega");
-        Camio instance = null;
-        double expResult = 0.0;
-        double result = instance.getCarrega();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of getLitresTotal method, of class Camio.
-     */
-    @Test
-    public void testGetLitresTotal() {
-        System.out.println("getLitresTotal");
-        Camio instance = null;
-        double expResult = 0.0;
-        double result = instance.getLitresTotal();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    static Stream<Arguments> CreateSlimVacaCamio() {
+        Raca racaFalsa = Mockito.mock(Raca.class);
+	Mockito.when(racaFalsa.getLitresPerKg()).thenReturn(10.0);
+                
+		return Stream.of(Arguments.of(new Vaca("vaca1", 300, racaFalsa), new Camio(1000)), 
+                        Arguments.of(new Vaca("vaca2", 1000, racaFalsa), new Camio(1000)),
+                        Arguments.of(new Vaca("vaca3", 0, racaFalsa), new Camio(1000))); 
+                     
+	}
 
-    /**
-     * Test of getVaques method, of class Camio.
-     */
-    @Test
-    public void testGetVaques() {
-        System.out.println("getVaques");
-        Camio instance = null;
-        List<Vaca> expResult = null;
-        List<Vaca> result = instance.getVaques();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of toString method, of class Camio.
-     */
-    @Test
-    public void testToString() {
-        System.out.println("toString");
-        Camio instance = null;
-        String expResult = "";
-        String result = instance.toString();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of afegirVaca method, of class Camio.
-     */
-    @Test
-    public void testAfegirVaca() {
-        System.out.println("afegirVaca");
-        Vaca newVaca = null;
-        Camio instance = null;
-        boolean expResult = false;
-        boolean result = instance.afegirVaca(newVaca);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of treureVaca method, of class Camio.
-     */
-    @Test
-    public void testTreureVaca() {
-        System.out.println("treureVaca");
-        Vaca remVaca = null;
-        Camio instance = null;
-        boolean expResult = false;
-        boolean result = instance.treureVaca(remVaca);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    static Stream<Arguments> CreateHugeVacaCamio() {
+        Raca racaFalsa = Mockito.mock(Raca.class);
+	Mockito.when(racaFalsa.getLitresPerKg()).thenReturn(10.0);
+        
+		return Stream.of(Arguments.of(new Vaca("vaca3", 101, racaFalsa), new Camio(100)), 
+                                Arguments.of(new Vaca("vaca4", 200, racaFalsa), new Camio(0)));
+    
     }
     
+      static Stream<Arguments> CreateVacaVacaCamio() {
+        Raca racaFalsa = Mockito.mock(Raca.class);
+	Mockito.when(racaFalsa.getLitresPerKg()).thenReturn(10.0);
+        
+		return Stream.of(Arguments.of(new Vaca("vaca1", 100, racaFalsa),new Vaca("vaca2", 200, racaFalsa), new Camio(1000))); 
+         
+    
+    }
+    
+    /**
+     * Test of afegirVaca method, of class Camio quan la vaca hi cap
+     */
+    @ParameterizedTest
+    @MethodSource("CreateSlimVacaCamio")
+    public void testAfegirVacaSiHiCap(Vaca vaca, Camio camio ) {
+        
+        // ARRANGE
+	double oldCarrega = camio.getCarrega();
+        double oldLitres = camio.getLitresTotal();
+       
+	// ACT
+	boolean resultat = camio.afegirVaca(vaca);
+
+	// ASSERT
+	assertEquals(true, resultat);
+        
+        assertEquals(oldCarrega+vaca.getPes(), camio.getCarrega());
+        
+        assertEquals( oldLitres+vaca.getLlet(), camio.getLitresTotal());
+                   
+       
+    }
+    
+     /**
+     * Test of afegirVaca method, of class Camio quan la vaca no hi cap
+     */
+    @ParameterizedTest
+    @MethodSource("CreateHugeVacaCamio")
+    public void testAfegirVacaSiNoHiCap(Vaca vaca, Camio camio) {
+       
+        // ARRANGE
+	double oldCarrega = camio.getCarrega();
+        double oldLitres = camio.getLitresTotal();
+       
+        // ACT
+	boolean resultat = camio.afegirVaca(vaca);
+        
+        // ASSERT
+        assertEquals(false, resultat);
+        
+        assertEquals(oldCarrega, camio.getCarrega());
+                                           
+        assertEquals(oldLitres,camio.getLitresTotal());
+                    
+                    
+    }
+
+    /**
+     * Test of treureVaca method si la vaca existeix, of class Camio.
+     */
+    @ParameterizedTest
+    @MethodSource("CreateVacaVacaCamio")
+    public void testTreureVacaSiExisteix(Vaca vaca1, Vaca vaca2, Camio camio) {
+
+        // ARRANGE
+        camio.afegirVaca(vaca1);
+        camio.afegirVaca(vaca2);
+        
+        double oldCarrega = vaca1.getPes() + vaca2.getPes();
+        double oldLitres = vaca1.getLlet() + vaca2.getLlet();
+        
+               
+        // ACT
+        boolean resultat = camio.treureVaca(vaca1);
+        
+        // ASSERT
+        assertEquals(true, resultat);
+        
+        assertEquals(oldCarrega-vaca1.getPes(),camio.getCarrega());
+                    
+        assertEquals(oldLitres-vaca1.getLlet(),camio.getLitresTotal());
+            
+        
+    }
+    
+      /**
+     * Test of treureVaca method si la vaca no existeix, of class Camio.
+     */
+    @ParameterizedTest
+    @MethodSource("CreateVacaVacaCamio")
+    public void testTreureVacaSiNoExisteix(Vaca vaca1, Vaca vaca2, Camio camio) {
+        
+     // ARRANGE
+        camio.afegirVaca(vaca2);
+        
+        
+        double oldCarrega = vaca2.getPes();
+        double oldLitres = vaca2.getLlet();
+        
+               
+        // ACT
+        boolean resultat = camio.treureVaca(vaca1);
+        
+        // ASSERT
+        assertEquals(false, resultat);
+        
+        assertEquals(oldCarrega,camio.getCarrega());
+                    
+        assertEquals(oldLitres,camio.getLitresTotal());
+        
+        
+    }
 }
