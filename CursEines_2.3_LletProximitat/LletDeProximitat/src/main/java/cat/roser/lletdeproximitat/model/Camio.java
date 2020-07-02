@@ -53,11 +53,12 @@ public class Camio {
     public boolean afegirVaca(Vaca newVaca){
         boolean result = false;
         if(!vaques.contains(newVaca)) {
-            if(this.pesMax>=this.carrega +newVaca.getPes() ){
-                result = vaques.add(newVaca);
-                if (result) {
-                    this.carrega = this.carrega + newVaca.getPes();
-                    this.litresTotal = this.litresTotal + newVaca.getLlet();
+            if(pesMax>=carrega +newVaca.getPes() ){
+           
+                if (vaques.add(newVaca)) {
+                    carrega  += newVaca.getPes();
+                    litresTotal += newVaca.getLlet();
+                    result = true;
                 }
             }
         }
@@ -71,10 +72,11 @@ public class Camio {
     public boolean treureVaca(Vaca remVaca){
         
         boolean result = false;
-        result = vaques.remove(remVaca);
-        if(result){
+       
+        if(vaques.remove(remVaca)){
             this.carrega = this.carrega - remVaca.getPes();
             this.litresTotal = this.litresTotal - remVaca.getLlet();
+            result = true;
         }
         return result;
         
