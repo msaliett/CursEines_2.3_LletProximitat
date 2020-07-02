@@ -98,6 +98,33 @@ public class CamioTest {
        
     }
     
+      /**
+     * Test of afegirVaca method, of class Camio quan la vaca hi cap
+     */
+    @ParameterizedTest
+    @MethodSource("CreateSlimVacaCamio")
+    public void testAfegirVacaSiJaExisteix(Vaca vaca, Camio camio ) {
+        
+        // ARRANGE
+        camio.afegirVaca(vaca);
+	double oldCarrega = camio.getCarrega();
+        double oldLitres = camio.getLitresTotal();
+       
+	// ACT
+	boolean resultat = camio.afegirVaca(vaca);
+
+	// ASSERT
+	assertEquals(false, resultat);
+        
+        assertEquals(oldCarrega, camio.getCarrega());
+        
+        assertEquals( oldLitres, camio.getLitresTotal());
+                   
+       
+    }
+    
+    
+    
      /**
      * Test of afegirVaca method, of class Camio quan la vaca no hi cap
      */
